@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>סיפורים לפני השינה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Assistant:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ebe9f4; --surface:#dfdcef; --text:#24223b; --muted:#625f80; --accent:#9a5f12;
+  --moon:#f1ddA6; --shade:#cbc7e0; --line:#cdc9e2; --glow:rgba(160,120,40,.18);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#161931; --surface:#1f2346; --text:#dddaf0; --muted:#8f8cb2; --accent:#e6ae4a;
+    --moon:#f3e0ac; --shade:#262b55; --line:#2d3163; --glow:rgba(243,224,172,.10);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#161931; --surface:#1f2346; --text:#dddaf0; --muted:#8f8cb2; --accent:#e6ae4a;
+  --moon:#f3e0ac; --shade:#262b55; --line:#2d3163; --glow:rgba(243,224,172,.10);
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{
+  margin:0;min-height:100%;background:var(--bg);color:var(--text);
+  font-family:"Assistant","Arial Hebrew",Arial,sans-serif;font-size:17px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+main{max-width:540px;margin:0 auto;padding:44px 22px 96px}
+h1{
+  font-family:"Frank Ruhl Libre","Times New Roman",serif;font-weight:500;
+  font-size:clamp(2.4rem,9vw,3.3rem);line-height:1.05;margin:0;text-align:center;letter-spacing:-.01em;
+}
+.byline{text-align:center;color:var(--muted);margin:.5rem 0 0}
+
+.player{display:flex;flex-direction:column;align-items:center;margin-top:34px}
+.moon-btn{
+  appearance:none;border:0;background:none;padding:0;cursor:pointer;border-radius:50%;
+  width:min(62vw,240px);aspect-ratio:1;display:block;
+  filter:drop-shadow(0 0 38px var(--glow));
+}
+.moon-btn:disabled{cursor:default;opacity:.7}
+.moon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:8px}
+.moon-btn svg{width:100%;height:100%;display:block}
+.moon-lit{fill:var(--moon)}
+.moon-shade{fill:var(--shade);transition:cx .25s linear}
+.moon-rim{fill:none;stroke:var(--line);stroke-width:1.5}
+.moon-icon{fill:var(--accent)}
+
+.now{text-align:center;margin-top:22px;min-height:5.2em}
+.now h2{
+  font-family:"Frank Ruhl Libre","Times New Roman",serif;font-weight:500;
+  font-size:1.55rem;line-height:1.2;margin:0;
+}
+.now p{color:var(--muted);margin:.35rem 0 0}
+.time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.95rem;direction:ltr;unicode-bidi:isolate}
+
+.seek{width:100%;max-width:360px;margin:14px 0 4px;accent-color:var(--accent)}
+
+.controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.controls button{
+  appearance:none;font:inherit;font-size:.95rem;color:var(--text);
+  background:var(--surface);border:1px solid var(--line);border-radius:999px;
+  padding:.5em 1.1em;cursor:pointer;
+}
+.controls button:disabled{opacity:.45;cursor:default}
+.controls button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.controls button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+
+.music{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.music button{
+  appearance:none;font:inherit;font-size:.95rem;color:var(--muted);background:none;
+  border:1px solid var(--line);border-radius:999px;padding:.45em 1em;cursor:pointer;
+}
+.music button[aria-pressed="true"]{color:var(--accent);border-color:var(--accent)}
+.music button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mvol{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.9rem}
+.mvol input{width:120px;accent-color:var(--accent)}
+.mvol[hidden]{display:none}
+.list{list-style:none;margin:48px 0 0;padding:0;border-top:1px solid var(--line)}
+.list li{border-bottom:1px solid var(--line)}
+.item{
+  appearance:none;width:100%;text-align:right;font:inherit;color:inherit;background:none;border:0;
+  display:grid;grid-template-columns:1fr auto;gap:2px 16px;padding:16px 4px;cursor:pointer;
+}
+.item:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.item .t{font-family:"Frank Ruhl Libre","Times New Roman",serif;font-size:1.2rem;font-weight:500}
+.item .d{grid-column:1;color:var(--muted);font-size:.95rem}
+.item .len{grid-row:1;grid-column:2;color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums;direction:ltr;align-self:center}
+.item[aria-current="true"] .t{color:var(--accent)}
+.item:disabled{cursor:default}
+.item:disabled .t,.item:disabled .d{opacity:.55}
+
+.note{color:var(--muted);text-align:center;font-size:.95rem;margin-top:28px}
+
+@media (prefers-reduced-motion: reduce){.moon-shade{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <h1>לילה טוב</h1>
+  <p class="byline">סיפורים רנדומליים לפני השינה, מגל</p>
+
+  <section class="player" aria-label="נגן">
+    <button class="moon-btn" id="moon" aria-label="נגן">
+      <svg viewBox="0 0 200 200" aria-hidden="true">
+        <defs><clipPath id="mc"><circle cx="100" cy="100" r="80"/></clipPath></defs>
+        <circle class="moon-lit" cx="100" cy="100" r="80"/>
+        <g clip-path="url(#mc)"><circle class="moon-shade" id="shade" cx="100" cy="100" r="81"/></g>
+        <circle class="moon-rim" cx="100" cy="100" r="80"/>
+        <g id="icon-play"><path class="moon-icon" d="M88 78 L120 100 L88 122 Z"/></g>
+        <g id="icon-pause" style="display:none"><rect class="moon-icon" x="85" y="80" width="10" height="40" rx="2"/><rect class="moon-icon" x="105" y="80" width="10" height="40" rx="2"/></g>
+      </svg>
+    </button>
+
+    <div class="now">
+      <h2 id="nowTitle"></h2>
+      <p id="nowDesc"></p>
+    </div>
+
+    <input type="range" class="seek" id="seek" min="0" max="1000" value="0" aria-label="מיקום בסיפור">
+    <div class="time"><span id="cur">0:00</span> / <span id="dur">0:00</span></div>
+
+    <div class="controls">
+      <button id="prev">הקודם</button>
+      <button id="next">הבא</button>
+      <button id="timer" aria-pressed="false">טיימר שינה: כבוי</button>
+    </div>
+    <div class="music">
+      <button id="musicBtn" aria-pressed="true">מוזיקת רקע: פועלת</button>
+      <label class="mvol"><span>עוצמה</span><input type="range" id="musicVol" min="0" max="100" value="35"></label>
+    </div>
+  </section>
+
+  <ol class="list" id="list"></ol>
+  <p class="note" id="note" hidden>ההקלטות יגיעו בקרוב</p>
+</main>
+
+<script>
+/* src: data URI של קובץ אודיו. מחרוזת ריקה = עוד לא הוקלט */
+const STORIES = [
+  {title:"התקליט שנשלח לחלל", desc:"וויאג'ר, תקליט מוזהב, ושני אנשים שהתאהבו בטלפון", src:"audio/s01.m4a"},
+  {title:"הצרחה שמופיעה במאות סרטים", desc:"צרחת וילהלם, מ-1951 ועד מלחמת הכוכבים", src:"audio/s02.m4a"},
+  {title:"מה שמענו בפארק היורה", desc:"פיל תינוק, תנין, נמר וזוג צבים", src:"audio/s03.m4a"},
+  {title:"ביצים מקושקשות", desc:"השיר שפול מקרטני חלם", src:"audio/s04.m4a"},
+  {title:"שקיעה כחולה", desc:"איך נראה ערב על מאדים", src:"audio/s05.m4a"},
+  {title:"שלושה לבבות", desc:"תמנונים, דם כחול ועוד כמה מוזרויות", src:""}
+];
+
+const $ = id => document.getElementById(id);
+const audio = new Audio();
+audio.preload = "metadata";
+let cur = -1, seeking = false, timerEnd = 0, timerIdx = 0;
+const TIMER_STEPS = [0, 10, 20, 30, 45];
+const durations = {};
+const avail = i => i >= 0 && i < STORIES.length && !!STORIES[i].src;
+const firstAvail = () => STORIES.findIndex((_, i) => avail(i));
+const nextAvail = (i, dir) => { for (let j = i + dir; j >= 0 && j < STORIES.length; j += dir) if (avail(j)) return j; return -1; };
+const fmt = s => { if (!isFinite(s)) return "0:00"; s = Math.floor(s); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
+
+function store(obj){ try{ localStorage.setItem("bedtime:last", JSON.stringify(obj)); }catch(e){} }
+function restore(){ try{ return JSON.parse(localStorage.getItem("bedtime:last") || "null"); }catch(e){ return null; } }
+
+function renderList(){
+  const ol = $("list"); ol.innerHTML = "";
+  STORIES.forEach((s, i) => {
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.className = "item"; b.disabled = !avail(i);
+    if (i === cur) b.setAttribute("aria-current", "true");
+    const t = document.createElement("span"); t.className = "t"; t.textContent = s.title;
+    const len = document.createElement("span"); len.className = "len";
+    len.textContent = avail(i) ? (durations[i] ? fmt(durations[i]) : "") : "בקרוב";
+    const d = document.createElement("span"); d.className = "d"; d.textContent = s.desc;
+    b.append(t, len, d);
+    b.addEventListener("click", () => { if (i === cur) toggle(); else select(i, 0, true); });
+    li.append(b); ol.append(li);
+  });
+}
+
+function renderNow(){
+  const s = STORIES[cur >= 0 ? cur : 0];
+  $("nowTitle").textContent = s ? s.title : "";
+  $("nowDesc").textContent = s ? s.desc : "";
+  $("prev").disabled = nextAvail(cur, -1) < 0;
+  $("next").disabled = nextAvail(cur, 1) < 0;
+  $("moon").disabled = !avail(cur);
+}
+
+function renderPlayState(){
+  const playing = !audio.paused;
+  $("icon-play").style.display = playing ? "none" : "";
+  $("icon-pause").style.display = playing ? "" : "none";
+  $("moon").setAttribute("aria-label", playing ? "השהה" : "נגן");
+  if ("mediaSession" in navigator) navigator.mediaSession.playbackState = playing ? "playing" : "paused";
+}
+
+function renderProgress(){
+  const d = audio.duration, t = audio.currentTime;
+  const p = isFinite(d) && d > 0 ? Math.min(1, t / d) : 0;
+  $("shade").setAttribute("cx", String(100 - 165 * p));
+  $("cur").textContent = fmt(t);
+  $("dur").textContent = fmt(d);
+  if (!seeking) $("seek").value = String(Math.round(p * 1000));
+}
+
+function select(i, startAt, autoplay){
+  if (!avail(i)) return;
+  cur = i;
+  audio.src = STORIES[i].src;
+  audio.addEventListener("loadedmetadata", () => {
+    if (startAt && startAt < audio.duration - 5) audio.currentTime = startAt;
+    renderProgress();
+  }, { once: true });
+  if (autoplay) { Music.start(); audio.play().catch(() => Music.stop()); }
+  if ("mediaSession" in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({ title: STORIES[i].title, artist: "גל", album: "סיפורים לפני השינה" });
+  }
+  store({ i, t: startAt || 0 });
+  renderNow(); renderList(); renderProgress(); renderPlayState();
+}
+
+function toggle(){
+  if (!avail(cur)) return;
+  if (audio.paused) { Music.start(); audio.play().catch(() => Music.stop()); } else audio.pause();
+}
+
+
+/* ambient background music, generated in the browser */
+const Music = (() => {
+  let ctx = null, master = null, bus = null, voices = [], chordI = 0, chordTimer = null, sleepT = null;
+  let enabled = true, vol = 0.35, mul = 1, running = false;
+  try { const m = JSON.parse(localStorage.getItem("bedtime:music") || "null"); if (m) { enabled = !!m.on; vol = +m.vol; } } catch (e) {}
+  const CHORDS = [
+    [146.83, 220.00, 277.18, 369.99],
+    [123.47, 185.00, 220.00, 293.66],
+    [98.00, 146.83, 185.00, 246.94],
+    [110.00, 164.81, 220.00, 277.18]
+  ];
+  const save = () => { try { localStorage.setItem("bedtime:music", JSON.stringify({ on: enabled, vol })); } catch (e) {} };
+  function ensure(){
+    if (ctx) return true;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    ctx = new AC();
+    master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+    bus = ctx.createBiquadFilter(); bus.type = "lowpass"; bus.frequency.value = 950; bus.Q.value = 0.4;
+    const delay = ctx.createDelay(1); delay.delayTime.value = 0.42;
+    const fb = ctx.createGain(); fb.gain.value = 0.38;
+    const dlp = ctx.createBiquadFilter(); dlp.type = "lowpass"; dlp.frequency.value = 1400;
+    bus.connect(master); bus.connect(delay); delay.connect(dlp); dlp.connect(fb); fb.connect(delay); dlp.connect(master);
+    const len = ctx.sampleRate * 4, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+    let b0 = 0, b1 = 0, b2 = 0;
+    for (let i = 0; i < len; i++) { const w = Math.random() * 2 - 1; b0 = .99765 * b0 + w * .099046; b1 = .963 * b1 + w * .2965164; b2 = .57 * b2 + w * 1.0526913; d[i] = (b0 + b1 + b2 + w * .1848) * .11; }
+    const noise = ctx.createBufferSource(); noise.buffer = buf; noise.loop = true;
+    const nhp = ctx.createBiquadFilter(); nhp.type = "highpass"; nhp.frequency.value = 400;
+    const nlp = ctx.createBiquadFilter(); nlp.type = "lowpass"; nlp.frequency.value = 2500;
+    const ng = ctx.createGain(); ng.gain.value = 0.05;
+    noise.connect(nhp); nhp.connect(nlp); nlp.connect(ng); ng.connect(master); noise.start();
+    return true;
+  }
+  function chord(){
+    const now = ctx.currentTime, notes = CHORDS[chordI++ % CHORDS.length];
+    const g = ctx.createGain(); g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(0.09, now + 6); g.connect(bus);
+    const oscs = [];
+    notes.forEach((f, k) => {
+      [["sine", 0, 0.6], ["triangle", 4, 0.25]].forEach(([type, det, amp]) => {
+        const o = ctx.createOscillator(); o.type = type; o.frequency.value = f; o.detune.value = det * (k % 2 ? 1 : -1);
+        const og = ctx.createGain(); og.gain.value = amp; o.connect(og); og.connect(g); o.start(now); oscs.push(o);
+      });
+    });
+    voices.forEach(v => {
+      v.g.gain.cancelScheduledValues(now); v.g.gain.setValueAtTime(v.g.gain.value, now);
+      v.g.gain.linearRampToValueAtTime(0, now + 6); v.oscs.forEach(o => o.stop(now + 6.5));
+    });
+    voices = [{ g, oscs }];
+  }
+  function apply(t){
+    if (!ctx) return;
+    const now = ctx.currentTime, target = enabled && running ? vol * mul : 0;
+    master.gain.cancelScheduledValues(now); master.gain.setValueAtTime(master.gain.value, now);
+    master.gain.linearRampToValueAtTime(target, now + t);
+  }
+  return {
+    get enabled(){ return enabled; }, get vol(){ return vol; },
+    start(){
+      running = true;
+      if (!enabled || !ensure()) return;
+      clearTimeout(sleepT);
+      if (ctx.state === "suspended") ctx.resume().catch(() => {});
+      if (!chordTimer) { chord(); chordTimer = setInterval(chord, 14000); }
+      apply(2.5);
+    },
+    stop(){
+      running = false; apply(2);
+      clearTimeout(sleepT);
+      sleepT = setTimeout(() => {
+        if (running || !ctx) return;
+        clearInterval(chordTimer); chordTimer = null;
+        ctx.suspend().catch(() => {});
+      }, 2600);
+    },
+    setEnabled(on){ enabled = on; save(); if (on && running) this.start(); else apply(1); },
+    setVol(v){ vol = v; save(); apply(0.3); },
+    setMul(m){ mul = m; apply(0.9); }
+  };
+})();
+
+function renderMusic(){
+  const b = $("musicBtn");
+  b.textContent = Music.enabled ? "מוזיקת רקע: פועלת" : "מוזיקת רקע: כבויה";
+  b.setAttribute("aria-pressed", String(Music.enabled));
+  $("musicVol").closest(".mvol").hidden = !Music.enabled;
+  $("musicVol").value = String(Math.round(Music.vol * 100));
+}
+$("musicBtn").addEventListener("click", () => { Music.setEnabled(!Music.enabled); renderMusic(); });
+$("musicVol").addEventListener("input", e => Music.setVol(e.target.value / 100));
+renderMusic();
+
+/* sleep timer, with a gentle fade over the last 30 seconds */
+function updateTimerLabel(){
+  const btn = $("timer");
+  if (!timerEnd) { btn.textContent = "טיימר שינה: כבוי"; btn.setAttribute("aria-pressed", "false"); return; }
+  const left = Math.max(0, Math.ceil((timerEnd - Date.now()) / 60000));
+  btn.textContent = "טיימר שינה: עוד " + left + " דק׳";
+  btn.setAttribute("aria-pressed", "true");
+}
+$("timer").addEventListener("click", () => {
+  timerIdx = (timerIdx + 1) % TIMER_STEPS.length;
+  const m = TIMER_STEPS[timerIdx];
+  timerEnd = m ? Date.now() + m * 60000 : 0;
+  audio.volume = 1; Music.setMul(1);
+  updateTimerLabel();
+});
+setInterval(() => {
+  if (!timerEnd) return;
+  const left = (timerEnd - Date.now()) / 1000;
+  if (left <= 0) {
+    audio.pause(); audio.volume = 1; Music.setMul(1); timerEnd = 0; timerIdx = 0;
+  } else if (left < 30) {
+    audio.volume = Math.max(0, left / 30); Music.setMul(Math.max(0, left / 30));
+  }
+  updateTimerLabel();
+}, 1000);
+
+$("moon").addEventListener("click", toggle);
+$("prev").addEventListener("click", () => { const j = nextAvail(cur, -1); if (j >= 0) select(j, 0, !audio.paused); });
+$("next").addEventListener("click", () => { const j = nextAvail(cur, 1); if (j >= 0) select(j, 0, !audio.paused); });
+
+const seek = $("seek");
+seek.addEventListener("input", () => { seeking = true; if (isFinite(audio.duration)) $("cur").textContent = fmt(audio.duration * seek.value / 1000); });
+seek.addEventListener("change", () => { if (isFinite(audio.duration)) audio.currentTime = audio.duration * seek.value / 1000; seeking = false; });
+
+let lastSave = 0;
+audio.addEventListener("timeupdate", () => {
+  renderProgress();
+  if (Date.now() - lastSave > 5000) { lastSave = Date.now(); store({ i: cur, t: audio.currentTime }); }
+});
+audio.addEventListener("play", () => { Music.start(); renderPlayState(); });
+audio.addEventListener("pause", () => { Music.stop(); renderPlayState(); store({ i: cur, t: audio.currentTime }); });
+audio.addEventListener("ended", () => {
+  const j = nextAvail(cur, 1);
+  if (j >= 0) select(j, 0, true); else { store({ i: cur, t: 0 }); renderPlayState(); }
+});
+
+if ("mediaSession" in navigator) {
+  try {
+    navigator.mediaSession.setActionHandler("play", () => audio.play());
+    navigator.mediaSession.setActionHandler("pause", () => audio.pause());
+    navigator.mediaSession.setActionHandler("previoustrack", () => $("prev").click());
+    navigator.mediaSession.setActionHandler("nexttrack", () => $("next").click());
+  } catch (e) {}
+}
+
+/* durations for the list */
+STORIES.forEach((s, i) => {
+  if (!s.src) return;
+  const a = new Audio(); a.preload = "metadata";
+  a.addEventListener("loadedmetadata", () => { durations[i] = a.duration; renderList(); }, { once: true });
+  a.src = s.src;
+});
+
+/* start where she left off */
+const last = restore();
+const start = last && avail(last.i) ? last.i : firstAvail();
+if (start >= 0) select(start, last && last.i === start ? last.t : 0, false);
+else { cur = -1; renderNow(); renderList(); $("note").hidden = false; }
+renderProgress(); renderPlayState(); updateTimerLabel();
+</script>
+</body>
+</html>
